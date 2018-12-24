@@ -1,0 +1,75 @@
+<!DOCTYPE html<<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Game</title>
+  <style>
+    .pixel {
+      height: 20px;
+      width: 20px;
+    }
+
+    .pixel-line {
+      display: flex;
+    }
+
+    .canvas {
+      border: 1px solid rgb(156, 156, 156);
+      display: inline-block;
+    }
+  </style>
+  <script src="utils.js"></script>
+  <script src="canvas.js"></script>
+  <script src="tetris_data.js"></script>
+  <script src="tetris.js"></script>
+  <script>
+    function main() {
+      const size = 24;
+      const canvas = new Canvas(size, size);
+      document.getElementById('canvas_container')
+        .appendChild(canvas.getElement());
+
+      const game = new Tetris(size, size);
+      game.streamGameTo(canvas);
+      game.setScoreCallback(
+        (score) => document.getElementById('score').value = score);
+      game.setMessageCallback(
+        (message) => {
+          const messageArea = document.getElementById('message');
+          messageArea.value = message + '\n' + messageArea.value;
+        });
+
+      document.addEventListener('keydown', (event) => {
+        switch (event.key) {
+          case 'ArrowUp':
+            game.up();
+            break;
+          case 'ArrowDown':
+            game.down();
+            break;
+          case 'ArrowLeft':
+            game.left();
+            break;
+          case 'ArrowRight':
+            game.right();
+            break;
+          case ' ':
+            game.downAll();
+            break;
+        }
+      });        
+      onClick('start_button', () => game.start());
+      onClick('reset_button', () => game.reset());
+    }
+  </script>
+</head>
+
+<body onload="main();">
+  <div id="canvas_container"></div>
+  <button id="start_button">Start</button>
+  <button id="reset_button">Reset</button>
+  <p>Score: <input id="score"></p>
+  <p><textarea id="message" readonly="true" rows="5" cols="80"></textarea></p>
+</body>
+
+</html>
